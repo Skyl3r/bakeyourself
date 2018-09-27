@@ -1,0 +1,10 @@
+bakeyourself.vim
+Skyl3r
+
+bakeyourself.vim is a vim navigation plugin for CakePHP projects
+It expects a few things of your project to make life easier for me
+
+1. All Controllers are located under src/Controller
+2. All templates are located under src/Template
+
+Besides that, don't do weird things and enjoy.
