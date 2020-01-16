@@ -1,21 +1,45 @@
-let g:cake_file_name = expand('%:t:r')
-let g:cake_file_extension = expand('%:e')
-let g:cake_file_type = '-1'
-let g:cake_project_root = '.'
+let g:cake_open_file_command = 'vsp '
 
-let g:cake_controller_name = ''
-let g:cake_path_to_template = ''
+let b:cake_file_name = expand('%:t:r')
+let b:cake_file_extension = expand('%:e')
+let b:cake_file_type = '-1'
+let b:cake_containing_folder = ''
+
+let b:cake_controller_name = ''
+let b:cake_project_root = '.'
 
 "Identify file type:
-if match(cake_file_name, 'Controller$') > -1
-	let g:cake_file_type = 'controller'
-elseif match(cake_file_name, 'Component$') > -1
-	let g:cake_file_type = 'component'
-elseif match(cake_file_name, 'Table$') > -1
-	let g:cake_file_type = 'model'
-elseif match(cake_file_extension, 'ctp') > -1
-	let g:cake_file_type = 'template'
+if match(b:cake_file_name, 'Controller$') > -1
+	let b:cake_file_type = 'controller'
+elseif match(b:cake_file_name, 'Component$') > -1
+	let b:cake_file_type = 'component'
+elseif match(b:cake_file_name, 'Table$') > -1
+	let b:cake_file_type = 'model'
+elseif match(b:cake_file_extension, 'ctp') > -1
+	let b:cake_file_type = 'template'
 endif
+
+
+function! GetCakeFileType()
+	let b:cake_file_name = expand('%:t:r')
+	let b:cake_file_extension = expand('%:e')
+	let b:cake_file_type = '-1'
+
+	let b:cake_controller_name = ''
+	let b:cake_project_root = '.'
+
+	"Identify file type:
+	if match(b:cake_file_name, 'Controller$') > -1
+		let b:cake_file_type = 'controller'
+	elseif match(b:cake_file_name, 'Component$') > -1
+		let b:cake_file_type = 'component'
+	elseif match(b:cake_file_name, 'Table$') > -1
+		let b:cake_file_type = 'model'
+	elseif match(b:cake_file_extension, 'ctp') > -1
+		let b:cake_file_type = 'template'
+	endif
+
+endfunction
 
 
 "Function gets last defined PHP function and returns it's name
@@ -26,20 +50,31 @@ function! GetLastFunction()
 
 endfunction
 
-function! CakeOpenTemplateFile()
-	let g:cake_controller_name = tolower(substitute(g:cake_file_name, "Controller", "", ""))
-	let g:cake_path_to_template = g:cake_project_root . "/Template/" . g:cake_controller_name . "/" . GetLastFunction() . ".ctp"
-	execute 'vsp ' . g:cake_path_to_template
+function! CakeOpenTemplate()
+	"Check if we're in a controller
+
+	call GetCakeFileType()
+	if b:cake_file_type != 'controller'
+		echo "Not a controller!"
+		return
+	endif
+
+	let b:cake_controller_name = substitute(b:cake_file_name, "Controller", "", "")
+	let b:cake_path_to_template = b:cake_project_root . "/src/Template/" . b:cake_controller_name . "/" . GetLastFunction() . ".ctp"
+
+	execute 'vsp ' . b:cake_path_to_template
+
 endfunction
 
-"Choose mappings based on file type...
-if cake_file_type == 'controller'
-	"Set mappings for navigate to template...
-	"Ctrl+g will be the Go command
+function! CakeOpenController()
+	call GetCakeFileType()
+	if b:cake_file_type != 'template'
+		echo "Not a template!"
+		return
+	endif
 
-	nmap <F5> :call CakeOpenTemplateFile()<CR>
-endif
+	let b:cake_containing_folder = split(expand('%:p:h'), '/')[-1]
 
-if cake_file_type == 'template'
-	"set mappings for navigate to controller...
-endif
+	execute g:cake_open_file_command . b:cake_project_root . '/src/Controller/' . b:cake_containing_folder . 'Controller.php'
+
+endfunction
