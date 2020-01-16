@@ -1,6 +1,7 @@
 let g:cake_file_name = expand('%:t:r')
 let g:cake_file_extension = expand('%:e')
 let g:cake_file_type = '-1'
+let g:cake_project_root = '.'
 
 let g:cake_controller_name = ''
 let g:cake_path_to_template = ''
@@ -27,7 +28,7 @@ endfunction
 
 function! CakeOpenTemplateFile()
 	let g:cake_controller_name = tolower(substitute(g:cake_file_name, "Controller", "", ""))
-	let g:cake_path_to_template = "../Template/" . g:cake_controller_name . "/" . GetLastFunction() . ".ctp"
+	let g:cake_path_to_template = g:cake_project_root . "/Template/" . g:cake_controller_name . "/" . GetLastFunction() . ".ctp"
 	execute 'vsp ' . g:cake_path_to_template
 endfunction
 
