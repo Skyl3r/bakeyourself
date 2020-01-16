@@ -1,4 +1,4 @@
-let g:cake_open_file_command = 'vsp '
+let g:cake_open_file_command = 'vsp'
 
 let b:cake_file_name = expand('%:t:r')
 let b:cake_file_extension = expand('%:e')
@@ -62,7 +62,7 @@ function! CakeOpenTemplate()
 	let b:cake_controller_name = substitute(b:cake_file_name, "Controller", "", "")
 	let b:cake_path_to_template = b:cake_project_root . "/src/Template/" . b:cake_controller_name . "/" . GetLastFunction() . ".ctp"
 
-	execute 'vsp ' . b:cake_path_to_template
+	execute g:cake_open_file_command . ' ' . b:cake_path_to_template
 
 endfunction
 
@@ -75,6 +75,6 @@ function! CakeOpenController()
 
 	let b:cake_containing_folder = split(expand('%:p:h'), '/')[-1]
 
-	execute g:cake_open_file_command . b:cake_project_root . '/src/Controller/' . b:cake_containing_folder . 'Controller.php'
+	execute g:cake_open_file_command . ' ' . b:cake_project_root . '/src/Controller/' . b:cake_containing_folder . 'Controller.php'
 
 endfunction
