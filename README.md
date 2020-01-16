@@ -1,5 +1,4 @@
 # BakeYourself.vim
-## Skyl3r
 
 __Please note, this is a work in progress and you should use with care__
 
